@@ -2,7 +2,6 @@
 
 
     class user {
-        public static array $usersDB = [];
         protected static int $idCounter = 0;
         protected int $id_user;
         protected string $username;
@@ -20,30 +19,19 @@
             $this->username = $username;
             $this->password = $password;
             $this->createdAt = new DateTime();
-
-            // $this->lastLogin = create function date set ti in of logout;
-
         }
 
         public function getId() { return $this->id_user; }
         public function getUsername() { return $this->username; }
-        // login (string email, string password)
-        public static function login ($email, $password)
-        {
-            foreach(self::$usersDB as $user)
-            {
-                if ($user->email === $email && $user->password == $password)
-                    return $user;
-            }
-            return null;
-        }
+        public function getemail() { return $this->email; }
+        public function getpassword() { return $this->password; }
+
         // logout()
         // addcomment(int idArticle, string content)
 
     }
 
     class Moderateur extends user {
-
         // deleteAnyArticle(int id_article) return bool
         // updateAnyArticle(int id_article) return bool
     }
@@ -77,16 +65,28 @@
     // displayStatistique() return void
 
     class Author extends user {
-        private string $bio;
-        private array $articles = [];
+        protected string $bio;
+        protected array $articles = [];
 
         public function __construct($email, $username, $password)
         {
             parent::__construct( $email  ,$username, $password);
-
         }
 
+        
         // createdArticle(string title, string content) return bool
+        public function addArticle(Article $article)
+        {
+            $this->articles[] = $article;
+        }
+
+        public function getArticles()
+        {
+            return $this->articles;
+        }
+
+
+
         // updateOwnArticle(int id_Article) return bool
         // deleteOwnArticle(int id_Article) return bool
     }
@@ -111,6 +111,11 @@
             $this->id_author = $id_author;
             $this->createdAt = new DateTime();
         }
+
+        public function getTitle() { return $this->title; }
+        public function getContent() { return $this->content; }
+        public function getCreatedAt() { return $this->createdAt->format('Y-m-d H:i:s'); }
+        public function getStatus() { return $this->status; }
     }
 
     class Comment {
@@ -146,46 +151,33 @@
         // getArticles() return array
     }
 
-$usersList = [
-    new Admin(1, "admin1@test.com", "AdminOne", "1111"),
-    new Admin(2, "admin2@test.com", "AdminTwo", "2222"),
-    new Admin(3, "admin3@test.com", "AdminThree", "3333"),
+// print_r($usersList[0]->getUsername());
 
-    new Editor(4, "editor1@test.com", "EditorOne", "4444"),
-    new Editor(5, "editor2@test.com", "EditorTwo", "5555"),
-    new Editor(6, "editor3@test.com", "EditorThree", "6666"),
-
-    new Author(7, "author1@test.com", "AuthorOne", "7777"),
-    new Author(8, "author2@test.com", "AuthorTwo", "8888"),
-    new Author(9, "author3@test.com", "AuthorThree", "9999"),
-];
-
-
-print_r($usersList[0]->getUsername());
-
-    function displaymenuLogin()
-    {
-        // echo "\n=======================\n";
-        // echo "\n  BLOG - Login page    \n";
-        // echo "\n=======================\n";
+//     function displaymenuLogin()
+//     {
+//         // echo "\n=======================\n";
+//         // echo "\n  BLOG - Login page    \n";
+//         // echo "\n=======================\n";
         
 
-        // echo "Entre Your Email\n";
-        // echo "==> ";
-        // $email = trim(fgets(STDIN, 100));
-        // echo "Entre Your Password\n";
-        // echo "==> ";
-        // $password = trim(fgets(STDIN, 100));
+//         // echo "Entre Your Email\n";
+//         // echo "==> ";
+//         // $email = trim(fgets(STDIN, 100));
+//         // echo "Entre Your Password\n";
+//         // echo "==> ";
+//         // $password = trim(fgets(STDIN, 100));
 
-        // $user = User::login($email,$password);
-        // if ($user)
-        // {
-        //     echo "Connecté: " . $user->getUsername();
-        // }
-        // else
-        //     echo "We don't have this Account";
-    }
+//         // $user = User::login($email,$password);
+//         // if ($user)
+//         // {
+//         //     echo "Connecté: " . $user->getUsername();
+//         // }
+//         // else
+//         //     echo "We don't have this Account";
+//     }
 
-    displaymenuLogin();
+//     displaymenuLogin();
+
+// 
 
 ?>
