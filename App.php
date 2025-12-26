@@ -20,14 +20,39 @@ class App {
             new Author("author3@test.com", "AuthorThree", "9999"),
         ];
 
-        // array article = get articles from authors 
+        $art1 = new Article(
+            "Intro to PHP", 
+            "PHP is a server scripting language...", 
+            "PHP Basics",
+            "Draft", 
+            7
+        );
+        $this->USERS[6]->addArticle($art1); 
+
+        $art2 = new Article(
+            "Laravel vs Symfony", 
+            "Comparison between frameworks...", 
+            "Frameworks", 
+            "Publish", 
+            7
+        );
+        $this->USERS[6]->addArticle($art2);
+
+        $art3 = new Article(
+            "Why I love Coding", 
+            "Coding is life...", 
+            "Lifestyle", 
+            "Draft", 
+            8
+        );
+        $this->USERS[7]->addArticle($art3);
+
     }
 
     public function login(string $email, string $password) 
     {
         foreach ($this->USERS as $user)
         {
-            // echo "email : " . $user->getemail() . ", " . "password: " . $user->getpassword() . "\n";
             if($user->getemail() == $email && $user->getpassword() == $password)
             {
                 return $user;
@@ -52,10 +77,89 @@ class App {
 function menuAdmin()
 {
 
+    while (true)
+    {
+        echo "\n-------Welcode to Admin Dashboard-------\n";
+        echo "\n\n";
+        echo "0. exist";
+        echo "1. Add user";
+        echo "2. Delete User";
+        echo "3. Create User";
+
+        $choix = trim(fgets(STDIN));
+
+        if ($choix == 1)
+        {
+            echo "\n------Add New User------";
+            echo "\n\n";
+            echo "Entre role of User\n";
+            echo "1- Admin\n";
+            echo "2- Editor\n";
+            echo "3- Author\n";
+
+            $choixRole = trim(fgets(STDIN));
+
+            if ($choixRole == 1)
+            {
+
+            }
+            elseif ($choixRole == 2)
+            {
+
+            }
+            else if ($choixRole == 3)
+            {
+                
+            }
+
+        }
+        elseif ($choix == 2)
+        {
+
+        }
+        elseif ($choix == 3)
+        {
+
+        }
+        elseif ($choix != 0)
+        {
+            echo "Incorroct Choix";
+        }
+        else
+            break;
+    }
 };
-function menuEditor() 
+function menuEditor($user, $app) 
 {
-    
+    while (true)
+    {
+        echo "\n--- EDITOR DASHBOARD ---\n";
+        echo "1. Valider les Articles (Draft -> Publish)\n";
+        echo "2. display All Articls Published\n";
+        echo "3. Exit\n==> ";
+
+        $choix = trim(fgets(STDIN));
+
+        if ($choix == 1)
+        {
+            $allArticles = $app->getAllArticles();
+            
+            print_r($app->getAllArticles());
+            $user->ArticleStatus($allArticles);
+        }
+        else if ($choix == 2)
+        {
+            $articles = $app->getAllArticles();
+
+            foreach($articles as $article) 
+            {
+                if ($article->getStatus() == "Publish" )
+                    echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
+            }
+        }
+        elseif($choix == 3)
+            break;
+    }
 }
 function menuAuthor($user,$app)
 {
@@ -71,6 +175,8 @@ function menuAuthor($user,$app)
 
         if($choix == 1)
         {
+        
+            print_r($app->getAllArticles());
             echo "Titre: ";
             $titre = trim(fgets(STDIN));
             echo "Contenu: ";
@@ -83,6 +189,7 @@ function menuAuthor($user,$app)
             $user->addArticle($newArticle);
 
             echo "Article Added\n";
+            print_r($app->getAllArticles());
         }
         else if ($choix == 2)
         {
@@ -104,7 +211,7 @@ function menuAuthor($user,$app)
                 }
             }
         }
-        else if ($choix = 3)
+        else if ($choix == 3)
         {
             $articles = $app->getAllArticles();
 
@@ -123,44 +230,74 @@ function menuAuthor($user,$app)
 
 function displaymenuLogin()
 {
-    $app = new App();
-    $currentUser = null;
-    echo "\n=======================\n";
-    echo "\n  BLOG - Login page    \n";
-    echo "\n=======================\n";
-    
-
-    echo "Entre Your Email\n";
-    echo "==> ";
-    $email = trim(fgets(STDIN, 100));
-    echo "Entre Your Password\n";
-    echo "==> ";
-    $password = trim(fgets(STDIN, 100));
-
-    $user = $app->login($email, $password);
-
-    if ($user)
+         $app = new App();
+    while (true)
     {
-        $currentUser = $user;
-        // print_r($currentUser);
-        if ($user instanceof Admin)
+   
+        // $currentUser = null;
+        echo "\n1- Login\n";
+        echo "2- Display All Articles\n";
+        echo "3- exist\n";
+    
+        $choix = trim(fgets(STDIN));
+    
+        if ($choix == 1)
         {
-            // echo "Admin\n";
-            menuAdmin();
+            echo "\n=======================\n";
+            echo "\n  BLOG - Login page    \n";
+            echo "\n=======================\n";
+            
+
+            echo "Entre Your Email\n";
+            echo "==> ";
+            $email = trim(fgets(STDIN, 100));
+            echo "Entre Your Password\n";
+            echo "==> ";
+            $password = trim(fgets(STDIN, 100));
+
+            $user = $app->login($email, $password);
+
+            if ($user)
+            {
+                $currentUser = $user;
+                // print_r($currentUser);
+                if ($user instanceof Admin)
+                {
+                    // echo "Admin\n";
+                    menuAdmin($user, $app);
+                }
+                else if ($user instanceof editor)
+                {
+                    // echo "Editor\n";
+                    menuEditor($user, $app);
+                }
+                else
+                {
+                    // echo "Author";
+                    menuAuthor($user,$app);
+                }
+            }
+            else
+                echo "We don't have this Account";
         }
-        else if ($user instanceof editor)
+        elseif ($choix == 2)
         {
-            // echo "Editor\n";
-            menuEditor($user, $app);
+            $articles = $app->getAllArticles();
+
+            foreach($articles as $index => $article) 
+            {
+                if ($article->getStatus() == "Publish")
+                {
+                    echo "Article n° : $index\n";
+                    echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
+                    echo "\n<Add Comment>\n";
+                }
+            }
         }
         else
-        {
-            // echo "Author";
-            menuAuthor($user,$app);
-        }
+            break;
     }
-    else
-        echo "We don't have this Account";
+
 }
 
 displaymenuLogin();
