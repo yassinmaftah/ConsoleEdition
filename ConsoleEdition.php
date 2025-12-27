@@ -114,10 +114,21 @@
           
                 return $NewUser;
         }
+        // deleteUser(int userID) return bool
+        public function deleteUser($AllUsersData)
+        {
+            foreach ($AllUsersData as $index => $UserData)
+            {
+                echo "n°[$index] => " . $UserData->getUsername() . "\n";
+            }
+            echo "Entre n° of User To delete: ";
+            $indexUserDelete = (int)trim(fgets(STDIN));
+            unset($AllUsersData[$indexUserDelete]);
+            return $AllUsersData;
+        }
+        // updateUserRole(int userid, string newRole)
+        // displayStatistique() return void
     }
-    // updateUserRole(int userid, string newRole)
-    // deleteUser(int userID) return bool
-    // displayStatistique() return void
 
     class Author extends user {
         protected string $bio;
