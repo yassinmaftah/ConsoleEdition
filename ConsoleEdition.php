@@ -25,6 +25,7 @@
         public function getUsername() { return $this->username; }
         public function getemail() { return $this->email; }
         public function getpassword() { return $this->password; }
+        public function GetDateCreation() { return $this->createdAt->format('Y-m-d H:i:s');}
 
         // logout()
         // addcomment(int idArticle, string content)
@@ -43,7 +44,43 @@
         {
             parent::__construct($email, $username, $password);
         }
-        // publishArticle(int id_article) 
+        // publishArticle(int id_article)
+        public function ArticleStatus(array $allArticles) 
+        {
+            $foundDraft = false;
+
+            echo "\n--- List of Articles Draft ---\n";
+
+            foreach($allArticles as $index => $art) 
+            {
+                if ($art->getStatus() == 'Draft') 
+                {
+                    $foundDraft = true;
+                    echo "[" . $index . "] " . $art->getTitle() . "\n";
+                }
+            }
+
+            if (!$foundDraft) {
+                echo "\n0 Article , All articles are Published\n";
+            } 
+            else {
+                echo "\nEntrer l'index de l'article w valider (ou -1 pour cancel): ";
+                $idx = (int)trim(fgets(STDIN));
+
+                if (isset($allArticles[$idx]))
+                {
+                    if ($allArticles[$idx]->getStatus() == 'Draft') {
+                        $allArticles[$idx]->setStatus("Publish"); 
+                        echo "Article Publie\n";
+                    } else {
+                        echo "this article was publier.\n";
+                    }
+                } 
+                else if ($idx != -1) {
+                    echo "Index Incorrect.\n";
+                }
+            }
+        }
         // moderateComment() return bool
         // createCategory() rerurn bool
         
@@ -57,9 +94,27 @@
             parent::__construct($email, $username, $password);
             $this->isSuperAdmin = 0;
         }
-
+        
+        // createUser() return bool
+        public function CreateUser($role)
+        {
+            echo "Entre Email Adrese: ";
+            $newEmail = trim(fgets(STDIN));
+            echo "Entre User name: ";
+            $NewUserName = trim(fgets(STDIN));
+            echo "Entre Password: ";
+            $NewPassword = trim(fgets(STDIN));
+            if ($role === "Admin")
+                $NewUser = new Admin($newEmail, $NewUserName, $NewPassword);
+            else if ($role == "editor")
+                $NewUser = new editor($newEmail, $NewUserName, $NewPassword);
+            else
+                $NewUser = new Author($newEmail, $NewUserName, $NewPassword);
+            
+          
+                return $NewUser;
+        }
     }
-    // createUser() return bool
     // updateUserRole(int userid, string newRole)
     // deleteUser(int userID) return bool
     // displayStatistique() return void
@@ -101,6 +156,7 @@
         protected DateTime $createdAt;
         protected DateTime $publishedAt;
         protected DateTime $updatedAt;
+        protected array $Comments = [];
 
         public function __construct($title, $content, $excerpt, $status, $id_author)
         {
@@ -116,6 +172,7 @@
         public function getContent() { return $this->content; }
         public function getCreatedAt() { return $this->createdAt->format('Y-m-d H:i:s'); }
         public function getStatus() { return $this->status; }
+        public function setStatus($newStatus) {$this->status = $newStatus;}
     }
 
     class Comment {
