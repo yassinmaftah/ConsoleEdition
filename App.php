@@ -49,6 +49,20 @@ class App {
 
     }
 
+    public function AddUser($user)
+    {
+        $this->USERS[] = $user;
+    }
+
+    public function GetAllUsers(){
+        return $this->USERS;
+    }
+
+    public function SetAllUser($AllUserNewData)
+    {
+        $this->USERS = $AllUserNewData;
+    }
+
     public function login(string $email, string $password) 
     {
         foreach ($this->USERS as $user)
@@ -74,17 +88,17 @@ class App {
 
 
 
-function menuAdmin()
+function menuAdmin($user,$app)
 {
 
     while (true)
     {
         echo "\n-------Welcode to Admin Dashboard-------\n";
         echo "\n\n";
-        echo "0. exist";
-        echo "1. Add user";
-        echo "2. Delete User";
-        echo "3. Create User";
+        echo "0. exist\n";
+        echo "1. Add user\n";
+        echo "2. Delete User\n";
+        echo "3- Dispaly All Users\n";
 
         $choix = trim(fgets(STDIN));
 
@@ -96,30 +110,53 @@ function menuAdmin()
             echo "1- Admin\n";
             echo "2- Editor\n";
             echo "3- Author\n";
+            echo "4- Cancel\n";
 
             $choixRole = trim(fgets(STDIN));
 
             if ($choixRole == 1)
             {
-
+                $NewObjUser = $user->CreateUser("Admin");
+                $app->AddUser($NewObjUser);
+                echo "Add user is valid\n";
             }
             elseif ($choixRole == 2)
             {
-
+                $NewObjUser = $user->CreateUser("editor");
+                $app->AddUser($NewObjUser);
+                echo "Add user is valid\n";
             }
             else if ($choixRole == 3)
             {
-                
+                $NewObjUser = $user->CreateUser("Author");
+                $app->AddUser($NewObjUser);
+                echo "Add user is valid\n";
             }
+            else if ($choixRole != 4)
+            {
+                echo "Invalid Chiox!\n";
+            }
+            else  
+                break;
 
         }
         elseif ($choix == 2)
         {
-
+            $AllUsersData = $app->GetAllUsers();
+            $AllUsersData = $user->deleteUser($AllUsersData);
+            $app->SetAllUser($AllUsersData);
+            echo "User Deleted\n";
         }
-        elseif ($choix == 3)
+        else if ($choix == 3)
         {
+            $AllUsers = $app->GetAllUsers();
 
+            foreach ($AllUsers as $u)
+            {
+                echo "\nUser Id : " . $u->getId();
+                echo "\nUser Name : " . $u->getUsername();
+                echo "\nDate Creation Account : " . $u->GetDateCreation() . "\n";
+            }
         }
         elseif ($choix != 0)
         {
@@ -144,7 +181,6 @@ function menuEditor($user, $app)
         {
             $allArticles = $app->getAllArticles();
             
-            print_r($app->getAllArticles());
             $user->ArticleStatus($allArticles);
         }
         else if ($choix == 2)
@@ -176,7 +212,6 @@ function menuAuthor($user,$app)
         if($choix == 1)
         {
         
-            print_r($app->getAllArticles());
             echo "Titre: ";
             $titre = trim(fgets(STDIN));
             echo "Contenu: ";
@@ -189,7 +224,6 @@ function menuAuthor($user,$app)
             $user->addArticle($newArticle);
 
             echo "Article Added\n";
-            print_r($app->getAllArticles());
         }
         else if ($choix == 2)
         {
