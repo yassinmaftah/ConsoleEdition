@@ -317,13 +317,53 @@ function displaymenuLogin()
         elseif ($choix == 2)
         {
             $articles = $app->getAllArticles();
+            echo "\nAll Articles\n";
 
             foreach($articles as $index => $article) 
             {
                 if ($article->getStatus() == "Publish")
                 {
-                    echo "Article n° : $index\n";
-                    echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
+                    echo "n° [$index] - Title: " . $article->getTitle() . "\n";
+                }
+            }
+
+            echo "Entre n° of Article to see Detail: ";
+            $ArticleChioce = (int)trim(fgets(STDIN));        
+            if ($ArticleChioce != -1 && isset($articles[$ArticleChioce]))
+            {
+                if ($articles[$ArticleChioce]->getStatus() == "Publish")
+                {
+
+                    echo "\n--------------------------------\n";
+                    echo "        " . $articles[$ArticleChioce]->getTitle() . "\n";
+                    echo "Created At: " . $articles[$ArticleChioce]->getCreatedAt() . "\n";
+                    echo "\n--------------------------------\n";
+                    echo $articles[$ArticleChioce]->getContent() . "\n";
+                    echo "\n--------------------------------\n";
+
+                    $CommentOfArticl = $articles[$ArticleChioce]->GetAllComment();
+                    if (empty($CommentOfArticl))
+                        echo "This Article has no Comments \n";
+                    else
+                    {
+                        echo "\n Commentairs (" . count($CommentOfArticl) . ") \n";
+                        foreach ($CommentOfArticl as $comment)
+                        {
+                            echo $comment->GetCommentContent() . "\n";
+                        }
+                    }
+                    echo "\n---------------------------------\n";
+                    echo "Add An comment? y/n \n";
+                    $rep = trim(fgets(STDIN));
+
+                    if ($rep ==  "y")
+                    {
+                        echo "\nYour comment: \n";
+                        $textComment = trim(fgets(STDIN));
+                        $newComment =  new Comment($textComment, $ArticleChioce);
+                        $articles[$ArticleChioce]->AddComment($newComment);
+                        echo "Comment Added\n";
+                    }
                 }
             }
         }
