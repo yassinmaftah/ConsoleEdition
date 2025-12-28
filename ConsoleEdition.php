@@ -27,8 +27,61 @@
         public function getpassword() { return $this->password; }
         public function GetDateCreation() { return $this->createdAt->format('Y-m-d H:i:s');}
 
-        // logout()
         // addcomment(int idArticle, string content)
+
+        public function DisplayArticlesAndComments($articles)
+        {
+            echo "\nAll Articles\n";
+
+            foreach($articles as $index => $article) 
+            {
+                if ($article->getStatus() == "Publish")
+                {
+                    echo "n° [$index] - Title: " . $article->getTitle() . "\n";
+                }
+            }
+
+            echo "Entre n° of Article to see Detail: ";
+            $ArticleChioce = (int)trim(fgets(STDIN));
+
+            if ($ArticleChioce != -1 && isset($articles[$ArticleChioce]))
+            {
+                if ($articles[$ArticleChioce]->getStatus() == "Publish")
+                {
+
+                    echo "\n--------------------------------\n";
+                    echo "        " . $articles[$ArticleChioce]->getTitle() . "\n";
+                    echo "Created At: " . $articles[$ArticleChioce]->getCreatedAt() . "\n";
+                    echo "\n--------------------------------\n";
+                    echo $articles[$ArticleChioce]->getContent() . "\n";
+                    echo "\n--------------------------------\n";
+
+                    $CommentOfArticl = $articles[$ArticleChioce]->GetAllComment();
+                    if (empty($CommentOfArticl))
+                        echo "This Article has no Comments \n";
+                    else
+                    {
+                        echo "\n Commentairs (" . count($CommentOfArticl) . ") \n";
+                        foreach ($CommentOfArticl as $comment)
+                        {
+                            echo $comment->GetCommentContent() . "\n";
+                        }
+                    }
+                    echo "\n---------------------------------\n";
+                    echo "Add An comment? y/n \n";
+                    $rep = trim(fgets(STDIN));
+
+                    if ($rep ==  "y")
+                    {
+                        echo "\nYour comment: \n";
+                        $textComment = trim(fgets(STDIN));
+                        $newComment =  new Comment($textComment, $ArticleChioce);
+                        $articles[$ArticleChioce]->AddComment($newComment);
+                        echo "Comment Added\n";
+                    }
+                }
+            }
+        }
 
     }
 
@@ -198,7 +251,7 @@
         public function  __construct($content, $id_article)
         {
             self::$counter++;
-            $this->id = self::$counter;;
+            $this->id = self::$counter;
             $this->content = $content;
             $this->id_article = $id_article;
             $this->createdAt = new DateTime();
