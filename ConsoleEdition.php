@@ -184,20 +184,28 @@
         public function getCreatedAt() { return $this->createdAt->format('Y-m-d H:i:s'); }
         public function getStatus() { return $this->status; }
         public function setStatus($newStatus) {$this->status = $newStatus;}
+        public function AddComment($comment) { $this->Comments[] = $comment;}
+        public function GetAllComment() { return $this->Comments;}
     }
 
     class Comment {
-        protected int $id_comment;
+        protected static int $counter = 0;
+        protected int $id;
         protected string $content;
         protected int $id_article;
         protected DateTime $createdAt;
 
         public function  __construct($content, $id_article)
         {
+            self::$counter++;
+            $this->id = self::$counter;;
             $this->content = $content;
             $this->id_article = $id_article;
             $this->createdAt = new DateTime();
         }
+
+        public function GetCommentContent() { return $this->content; }
+        public function SetCommentContent($content) { $this->content = $content;}
     }
 
     class Category {
