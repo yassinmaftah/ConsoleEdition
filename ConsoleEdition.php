@@ -64,18 +64,18 @@
                         echo "\n Commentairs (" . count($CommentOfArticl) . ") \n";
                         foreach ($CommentOfArticl as $comment)
                         {
-                            echo $comment->GetCommentContent() . "\n";
+                            echo $comment->getAuthorName() . " : " . $comment->GetCommentContent()  ."\n";
                         }
                     }
-                    echo "\n---------------------------------\n";
-                    echo "Add An comment? y/n \n";
+                    echo "\nAdd An comment? y/n \n";
                     $rep = trim(fgets(STDIN));
 
                     if ($rep ==  "y")
                     {
                         echo "\nYour comment: \n";
                         $textComment = trim(fgets(STDIN));
-                        $newComment =  new Comment($textComment, $ArticleChioce);
+                        $name = $this->getUsername();
+                        $newComment =  new Comment($textComment, $ArticleChioce, $name);
                         $articles[$ArticleChioce]->AddComment($newComment);
                         echo "Comment Added\n";
                     }
@@ -247,18 +247,21 @@
         protected string $content;
         protected int $id_article;
         protected DateTime $createdAt;
+        protected string $authorName;
 
-        public function  __construct($content, $id_article)
+        public function  __construct($content, $id_article, $authorName = "visiteur")
         {
             self::$counter++;
             $this->id = self::$counter;
             $this->content = $content;
             $this->id_article = $id_article;
             $this->createdAt = new DateTime();
+            $this->authorName = $authorName;
         }
 
         public function GetCommentContent() { return $this->content; }
         public function SetCommentContent($content) { $this->content = $content;}
+        public function getAuthorName() { return $this->authorName; }
     }
 
     class Category {
