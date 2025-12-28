@@ -65,11 +65,11 @@ class App {
 
     public function login(string $email, string $password) 
     {
-        foreach ($this->USERS as $user)
+        foreach ($this->USERS as $userIsLog)
         {
-            if($user->getemail() == $email && $user->getpassword() == $password)
+            if($userIsLog->getemail() == $email && $userIsLog->getpassword() == $password)
             {
-                return $user;
+                return $userIsLog;
             }
         }
         return null;
@@ -78,9 +78,9 @@ class App {
     public function getAllArticles() 
     {
         $all = [];
-        foreach ($this->USERS as $user) {
-            if ($user instanceof Author)
-                $all = array_merge($all, $user->getArticles());
+        foreach ($this->USERS as $UserLog) {
+            if ($UserLog instanceof Author)
+                $all = array_merge($all, $UserLog->getArticles());
         }
         return $all;
     }
@@ -324,7 +324,6 @@ function displaymenuLogin()
                 {
                     echo "Article n° : $index\n";
                     echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
-                    echo "\n<Add Comment>\n";
                 }
             }
         }
