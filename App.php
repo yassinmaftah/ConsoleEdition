@@ -99,6 +99,7 @@ function menuAdmin($user,$app)
         echo "1. Add user\n";
         echo "2. Delete User\n";
         echo "3- Dispaly All Users\n";
+        echo "4- Dispaly All Articls\n";
 
         $choix = trim(fgets(STDIN));
 
@@ -158,6 +159,11 @@ function menuAdmin($user,$app)
                 echo "\nDate Creation Account : " . $u->GetDateCreation() . "\n";
             }
         }
+        elseif ($choix == 4)
+        {
+            $articles = $app->getAllArticles();
+            $user->DisplayArticlesAndComments($articles);
+        }
         elseif ($choix != 0)
         {
             echo "Incorroct Choix";
@@ -186,12 +192,7 @@ function menuEditor($user, $app)
         else if ($choix == 2)
         {
             $articles = $app->getAllArticles();
-
-            foreach($articles as $article) 
-            {
-                if ($article->getStatus() == "Publish" )
-                    echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
-            }
+            $user->DisplayArticlesAndComments($articles);
         }
         elseif($choix == 3)
             break;
@@ -248,12 +249,7 @@ function menuAuthor($user,$app)
         else if ($choix == 3)
         {
             $articles = $app->getAllArticles();
-
-            foreach($articles as $article) 
-            {
-                if ($article->getStatus() == "Publish" )
-                    echo "\nTitle: " . $article->getTitle() . " | Status: " . $article->getStatus();
-            }
+            $user->DisplayArticlesAndComments($articles);
         }
         else
             break ;
@@ -317,7 +313,7 @@ function displaymenuLogin()
         elseif ($choix == 2)
         {
             $articles = $app->getAllArticles();
-            echo "\nAll Articles\n";
+                        echo "\nAll Articles\n";
 
             foreach($articles as $index => $article) 
             {
@@ -328,7 +324,8 @@ function displaymenuLogin()
             }
 
             echo "Entre n° of Article to see Detail: ";
-            $ArticleChioce = (int)trim(fgets(STDIN));        
+            $ArticleChioce = (int)trim(fgets(STDIN));
+
             if ($ArticleChioce != -1 && isset($articles[$ArticleChioce]))
             {
                 if ($articles[$ArticleChioce]->getStatus() == "Publish")
@@ -366,6 +363,7 @@ function displaymenuLogin()
                     }
                 }
             }
+
         }
         else
             break;
